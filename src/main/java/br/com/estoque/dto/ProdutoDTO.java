@@ -3,10 +3,9 @@ package br.com.estoque.dto;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import java.math.BigDecimal;
 
 public class ProdutoDTO {
     @NotBlank(message = "O nome do produto é obrigatório.")
@@ -18,7 +17,7 @@ public class ProdutoDTO {
 
     @NotNull(message = "O preço é obrigatório.")
     @DecimalMin(value = "0.0", inclusive = false, message = "O preço deve ser maior que zero.")
-    private BigDecimal preco;
+    private Double preco;
 
     @NotNull(message = "A quantidade é obrigatória.")
     @PositiveOrZero(message = "A quantidade não pode ser negativa.")
@@ -30,7 +29,7 @@ public class ProdutoDTO {
 
     @NotNull(message = "O ID do estoque é obrigatório.")
     @Positive(message = "O ID do estoque deve ser maior que zero.")
-    private Long estoqueId;
+    private Integer estoqueId;
 
     public String getNome() {
         return nome;
@@ -48,11 +47,11 @@ public class ProdutoDTO {
         this.descricao = descricao;
     }
 
-    public BigDecimal getPreco() {
+    public Double getPreco() {
         return preco;
     }
 
-    public void setPreco(BigDecimal preco) {
+    public void setPreco(Double preco) {
         this.preco = preco;
     }
 
@@ -72,11 +71,11 @@ public class ProdutoDTO {
         this.quantidadeMinima = quantidadeMinima;
     }
 
-    public Long getEstoqueId() {
+    public Integer getEstoqueId() {
         return estoqueId;
     }
 
-    public void setEstoqueId(Long estoqueId) {
+    public void setEstoqueId(Integer estoqueId) {
         this.estoqueId = estoqueId;
     }
 }

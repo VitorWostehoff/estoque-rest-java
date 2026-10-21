@@ -9,7 +9,6 @@ import br.com.estoque.model.Estoque;
 import br.com.estoque.model.Produto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -28,7 +27,7 @@ public class ProdutoService {
     }
 
     @Transactional(readOnly = true)
-    public Produto buscarPorId(Long id) {
+    public Produto buscarPorId(int id) {
         return produtoDAO.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + id + " não encontrado."));
     }
@@ -42,14 +41,11 @@ public class ProdutoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Produto> buscarPorFaixaDePreco(BigDecimal minimo, BigDecimal maximo) {
-        if (minimo == null || maximo == null) {
-            throw new BusinessException("Informe os preços mínimo e máximo.");
-        }
-        if (minimo.signum() < 0 || maximo.signum() < 0) {
+    public List<Produto> buscarPorFaixaDePreco(double minimo, double maximo) {
+        if (minimo < 0 || maximo < 0) {
             throw new BusinessException("Os preços não podem ser negativos.");
         }
-        if (minimo.compareTo(maximo) > 0) {
+        if (minimo > maximo) {
             throw new BusinessException("O preço mínimo não pode ser maior que o preço máximo.");
         }
         return produtoDAO.findByPrecoBetween(minimo, maximo);
@@ -63,14 +59,14 @@ public class ProdutoService {
     }
 
     @Transactional
-    public Produto atualizar(Long id, ProdutoDTO dados) {
+    public Produto atualizar(int id, ProdutoDTO dados) {
         Produto produto = buscarPorId(id);
         preencherProduto(produto, dados);
         return produtoDAO.save(produto);
     }
 
     @Transactional
-    public void excluir(Long id) {
+    public void excluir(int id) {
         Produto produto = buscarPorId(id);
         produtoDAO.delete(produto);
     }

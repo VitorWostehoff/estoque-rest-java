@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -33,7 +32,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Produto> buscarPorId(@PathVariable int id) {
         return ResponseEntity.ok(produtoService.buscarPorId(id));
     }
 
@@ -44,8 +43,8 @@ public class ProdutoController {
 
     @GetMapping("/preco")
     public ResponseEntity<List<Produto>> buscarPorFaixaDePreco(
-            @RequestParam BigDecimal minimo,
-            @RequestParam BigDecimal maximo) {
+            @RequestParam double minimo,
+            @RequestParam double maximo) {
         return ResponseEntity.ok(produtoService.buscarPorFaixaDePreco(minimo, maximo));
     }
 
@@ -56,12 +55,12 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @Valid @RequestBody ProdutoDTO dados) {
+    public ResponseEntity<Produto> atualizar(@PathVariable int id, @Valid @RequestBody ProdutoDTO dados) {
         return ResponseEntity.ok(produtoService.atualizar(id, dados));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+    public ResponseEntity<Void> excluir(@PathVariable int id) {
         produtoService.excluir(id);
         return ResponseEntity.noContent().build();
     }

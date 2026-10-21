@@ -9,7 +9,7 @@ import java.util.List;
 public class Estoque {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(nullable = false)
     private String nome;
@@ -20,17 +20,38 @@ public class Estoque {
     @OneToMany(mappedBy = "estoque")
     private List<Produto> produtos = new ArrayList<>();
 
-    public Estoque() {}
+    public Estoque() {
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getLocalizacao() { return localizacao; }
-    public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
+    public String getNome() {
+        return nome;
+    }
 
-    public List<Produto> getProdutos() { return produtos; }
-    public void setProdutos(List<Produto> produtos) { this.produtos = produtos; }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getLocalizacao() {
+        return localizacao;
+    }
+
+    public void setLocalizacao(String localizacao) {
+        this.localizacao = localizacao;
+    }
+
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
+    }
 }

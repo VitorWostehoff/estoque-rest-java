@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EstoqueDAO extends JpaRepository<Estoque, Long> {
+public interface EstoqueDAO extends JpaRepository<Estoque, Integer> {
     List<Estoque> findByNomeContainingIgnoreCase(String nome);
     List<Estoque> findByLocalizacaoContainingIgnoreCase(String localizacao);
 }

@@ -2,14 +2,13 @@ package br.com.estoque.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "produto")
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(nullable = false, length = 100)
     private String nome;
@@ -17,14 +16,14 @@ public class Produto {
     @Column(length = 500)
     private String descricao;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal preco;
+    @Column(nullable = false)
+    private double preco;
 
     @Column(nullable = false)
-    private Integer quantidade;
+    private int quantidade;
 
     @Column(nullable = false)
-    private Integer quantidadeMinima;
+    private int quantidadeMinima;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("produtos")
@@ -34,11 +33,11 @@ public class Produto {
     public Produto() {
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -58,27 +57,27 @@ public class Produto {
         this.descricao = descricao;
     }
 
-    public BigDecimal getPreco() {
+    public double getPreco() {
         return preco;
     }
 
-    public void setPreco(BigDecimal preco) {
+    public void setPreco(double preco) {
         this.preco = preco;
     }
 
-    public Integer getQuantidade() {
+    public int getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(Integer quantidade) {
+    public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
     }
 
-    public Integer getQuantidadeMinima() {
+    public int getQuantidadeMinima() {
         return quantidadeMinima;
     }
 
-    public void setQuantidadeMinima(Integer quantidadeMinima) {
+    public void setQuantidadeMinima(int quantidadeMinima) {
         this.quantidadeMinima = quantidadeMinima;
     }
 

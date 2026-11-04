@@ -1,11 +1,13 @@
 package br.com.estoque.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "estoque")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Estoque {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

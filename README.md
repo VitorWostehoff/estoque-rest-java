@@ -1,48 +1,91 @@
-# Estoque REST Java
+#Estoque REST API (Spring Boot + MariaDB)
 
-Sistema de gestão de estoque desenvolvido em **Java** utilizando **Web Services REST**, como projeto da disciplina de **Programação Web II**.
+Sistema de gestão de estoque desenvolvido em Java utilizando Spring Boot, como evolução para uma API RESTful moderna com autenticação segura e persistência relacional.
 
-## Sobre o projeto
+---
 
-O objetivo do projeto é desenvolver um Web Service REST para gerenciamento de estoque de pequenas empresas.
+##Sobre o Projeto
 
-O sistema utiliza três entidades principais:
+O objetivo do projeto é fornecer um Web Service REST para o gerenciamento eficiente de estoque e produtos em pequenas empresas.
 
-- **Produto**
-- **Estoque**
-- **Usuário**
+O sistema implementa duas entidades principais e relacionadas:
+* **Produto**: Contém informações como nome, preço, quantidade, quantidade mínima e o vínculo com o estoque.
+* **Estoque**: Representa o armazém ou local físico onde os produtos estão armazenados.
 
-Um **Estoque** pode possuir vários **Produtos**, estabelecendo um relacionamento de **1 para N**.
+A aplicação permite realizar operações completas de CRUD (cadastrar, consultar, atualizar e excluir) para ambas as entidades, garantindo integridade relacional através do Spring Data JPA e segurança de ponta a ponta com Spring Security (JWT).
 
-A aplicação permite realizar operações de **CRUD** (cadastrar, consultar, atualizar e excluir) e consultas adicionais para as entidades do sistema.
+---
 
-Os dados são armazenados em um banco de dados **MySQL**, utilizando **JPA/Hibernate** para persistência.
+##Tecnologias Utilizadas
 
-O sistema também possui autenticação e autorização de usuários utilizando **Spring Security e JWT**.
+* **Java 17**
+* **Spring Boot 3**
+* **Spring Security** (Autenticação Stateless via JWT)
+* **Spring Data JPA / Hibernate**
+* **MariaDB / MySQL** (Banco de dados relacional)
+* **Lombok**
+* **Bean Validation** (`@Valid`)
+* **Maven** (Gerenciamento de dependências)
+* **Git e GitHub**
 
-## Tecnologias utilizadas
+---
 
-- Java
-- Maven
-- Spring Boot
-- Spring Web
-- Spring Data JPA
-- Hibernate
-- MySQL
-- Spring Security
-- JWT
-- JSON
-- Git e GitHub
-- Postman
-
-## Estrutura do projeto
+##Estrutura do Projeto
 
 ```text
 src/main/java/br/com/estoque/
-├── controller/
-├── dao/
-├── dto/
-├── exception/
-├── model/
-├── security/
-└── service/
+├── controller/        # Controladores REST (Endpoints da API)
+├── model/             # Entidades JPA (Produto e Estoque)
+├── repository/        # Repositórios de dados (Spring Data JPA)
+├── security/          # Configurações de segurança e filtros JWT
+└── service/           # Regras de negócio da aplicação
+
+Como Executar o Projeto:
+
+Clone o repositório.:
+
+Bash
+git clone [https://github.com/VitorWostehoff/estoque-rest-java.git](https://github.com/VitorWostehoff/estoque-rest-java.git)
+Configure o Banco de Dados:
+No arquivo src/main/resources/application.properties, configure as credenciais de acesso ao seu servidor MariaDB (ou utilize variáveis de ambiente para a senha).
+
+Execute a aplicação:
+
+mvn spring-boot:run
+
+Instruções para os Integrantes da Equipe
+Esta seção contém instruções básicas de Git para os integrantes responsáveis pelo desenvolvimento do projeto.
+
+Antes de começar a programar
+Sempre atualize sua cópia local do projeto antes de realizar alterações:
+
+git pull --rebase
+Depois disso, faça suas alterações normalmente.
+
+Quando terminar suas alterações
+Adicione os arquivos modificados:
+
+git add .
+Crie um commit descrevendo o que foi feito:
+
+git commit -m "descreva o que foi feito"
+Antes de enviar, atualize novamente sua branch local:
+
+git pull --rebase
+Por fim, envie as alterações para o GitHub:
+
+git push origin main
+Fluxo resumido
+git pull --rebase
+
+Fazer as alterações no código
+
+git add .
+
+git commit -m "mensagem do commit"
+
+git pull --rebase
+
+git push origin main
+
+Importante: Não começar a desenvolver sem antes executar git pull --rebase. Isso ajuda a garantir que você esteja trabalhando com a versão mais recente do projeto e reduz a possibilidade de conflitos com alterações realizadas por outros integrantes.

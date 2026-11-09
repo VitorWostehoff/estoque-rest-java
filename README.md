@@ -1,91 +1,122 @@
-#Estoque REST API (Spring Boot + MariaDB)
+# Estoque REST API
 
-Sistema de gestão de estoque desenvolvido em Java utilizando Spring Boot, como evolução para uma API RESTful moderna com autenticação segura e persistência relacional.
+Sistema de gestão de estoque desenvolvido em Java utilizando Spring Boot, como evolução do projeto de estoque desenvolvido anteriormente com Web Services SOAP, para uma API RESTful com autenticação segura e persistência em banco de dados relacional.
 
----
+## Sobre o projeto
 
-##Sobre o Projeto
+O objetivo do projeto é desenvolver um Web Service REST para o gerenciamento de estoque de pequenas empresas.
 
-O objetivo do projeto é fornecer um Web Service REST para o gerenciamento eficiente de estoque e produtos em pequenas empresas.
+O sistema utiliza duas entidades principais relacionadas:
 
-O sistema implementa duas entidades principais e relacionadas:
-* **Produto**: Contém informações como nome, preço, quantidade, quantidade mínima e o vínculo com o estoque.
-* **Estoque**: Representa o armazém ou local físico onde os produtos estão armazenados.
+- **Produto**
+- **Estoque**
 
-A aplicação permite realizar operações completas de CRUD (cadastrar, consultar, atualizar e excluir) para ambas as entidades, garantindo integridade relacional através do Spring Data JPA e segurança de ponta a ponta com Spring Security (JWT).
+A aplicação permite realizar operações de CRUD (cadastrar, consultar, atualizar e excluir) para as duas entidades.
 
----
+Diferentemente da versão anterior, que armazenava os dados em memória, este projeto utiliza MariaDB/MySQL para persistência dos dados, com Spring Data JPA e Hibernate.
 
-##Tecnologias Utilizadas
+A API também conta com autenticação e segurança utilizando Spring Security e JWT (JSON Web Token).
 
-* **Java 17**
-* **Spring Boot 3**
-* **Spring Security** (Autenticação Stateless via JWT)
-* **Spring Data JPA / Hibernate**
-* **MariaDB / MySQL** (Banco de dados relacional)
-* **Lombok**
-* **Bean Validation** (`@Valid`)
-* **Maven** (Gerenciamento de dependências)
-* **Git e GitHub**
+## Tecnologias utilizadas
 
----
+- Java 17
+- Spring Boot 3
+- Spring Security
+- JWT (JSON Web Token)
+- Spring Data JPA
+- Hibernate
+- MariaDB / MySQL
+- Lombok
+- Bean Validation
+- Maven
+- Git e GitHub
 
-##Estrutura do Projeto
+## Estrutura do projeto
 
 ```text
 src/main/java/br/com/estoque/
-├── controller/        # Controladores REST (Endpoints da API)
-├── model/             # Entidades JPA (Produto e Estoque)
-├── repository/        # Repositórios de dados (Spring Data JPA)
-├── security/          # Configurações de segurança e filtros JWT
-└── service/           # Regras de negócio da aplicação
+├── controller/
+│   └── Controladores REST (Endpoints da API)
+├── model/
+│   ├── Produto.java
+│   └── Estoque.java
+├── repository/
+│   └── Repositórios de dados
+├── security/
+│   └── Configurações de segurança e filtros JWT
+└── service/
+    └── Regras de negócio da aplicação
+```
 
-Como Executar o Projeto:
+## Como executar o projeto
 
-Clone o repositório.:
+### 1. Clonar o repositório
 
-Bash
-git clone [https://github.com/VitorWostehoff/estoque-rest-java.git](https://github.com/VitorWostehoff/estoque-rest-java.git)
-Configure o Banco de Dados:
-No arquivo src/main/resources/application.properties, configure as credenciais de acesso ao seu servidor MariaDB (ou utilize variáveis de ambiente para a senha).
+```bash
+git clone https://github.com/VitorWostehoff/estoque-rest-java.git
+```
 
-Execute a aplicação:
+### 2. Configurar o banco de dados
 
+No arquivo `src/main/resources/application.properties`, configure as credenciais de acesso ao servidor MariaDB/MySQL.
+
+Também é possível utilizar variáveis de ambiente para configurar a senha do banco de dados.
+
+### 3. Executar a aplicação
+
+Na pasta do projeto, execute:
+
+```bash
 mvn spring-boot:run
+```
 
-Instruções para os Integrantes da Equipe
+## Instruções para os integrantes da equipe
+
 Esta seção contém instruções básicas de Git para os integrantes responsáveis pelo desenvolvimento do projeto.
 
-Antes de começar a programar
+### Antes de começar a programar
+
 Sempre atualize sua cópia local do projeto antes de realizar alterações:
 
+```bash
 git pull --rebase
+```
+
 Depois disso, faça suas alterações normalmente.
 
-Quando terminar suas alterações
+### Quando terminar suas alterações
+
 Adicione os arquivos modificados:
 
+```bash
 git add .
+```
+
 Crie um commit descrevendo o que foi feito:
 
+```bash
 git commit -m "descreva o que foi feito"
+```
+
 Antes de enviar, atualize novamente sua branch local:
 
+```bash
 git pull --rebase
+```
+
 Por fim, envie as alterações para o GitHub:
 
+```bash
 git push origin main
-Fluxo resumido
-git pull --rebase
+```
 
-Fazer as alterações no código
+### Fluxo resumido
 
-git add .
+1. `git pull --rebase`
+2. Fazer as alterações no código
+3. `git add .`
+4. `git commit -m "mensagem do commit"`
+5. `git pull --rebase`
+6. `git push origin main`
 
-git commit -m "mensagem do commit"
-
-git pull --rebase
-
-git push origin main
-
-Importante: Não começar a desenvolver sem antes executar git pull --rebase. Isso ajuda a garantir que você esteja trabalhando com a versão mais recente do projeto e reduz a possibilidade de conflitos com alterações realizadas por outros integrantes.
+**Importante:** não começar a desenvolver sem antes executar `git pull --rebase`. Isso ajuda a garantir que você esteja trabalhando com a versão mais recente do projeto e reduz a possibilidade de conflitos com alterações realizadas por outros integrantes.

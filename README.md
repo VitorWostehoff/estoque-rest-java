@@ -1,32 +1,32 @@
 # Estoque REST API
 
-Sistema de gestão de estoque desenvolvido em Java utilizando Spring Boot, como evolução do projeto de estoque desenvolvido anteriormente com Web Services SOAP, para uma API RESTful com autenticação segura e persistência em banco de dados relacional.
+Sistema de gestão de estoque desenvolvido em Java utilizando Spring Boot, como evolução do projeto anterior desenvolvido com Web Services SOAP, agora utilizando uma API RESTful, autenticação com JWT e persistência em banco de dados relacional.
 
 ## Sobre o projeto
 
-O objetivo do projeto é desenvolver um Web Service REST para o gerenciamento de estoque de pequenas empresas.
+O objetivo do projeto é desenvolver uma API REST para o gerenciamento de estoque de pequenas empresas.
 
-O sistema utiliza duas entidades principais relacionadas:
+O sistema possui três entidades principais:
 
-- **Produto**
-- **Estoque**
+- **Produto:** armazena informações como nome, descrição, preço, quantidade e quantidade mínima, além do vínculo com um estoque.
+- **Estoque:** representa o local onde os produtos são armazenados.
+- **Usuário:** armazena informações de acesso e perfil dos usuários do sistema.
 
-A aplicação permite realizar operações de CRUD (cadastrar, consultar, atualizar e excluir) para as duas entidades.
+A aplicação possui operações de CRUD para produtos, funcionalidades de cadastro e consulta de usuários e autenticação por meio de JWT (JSON Web Token).
 
-Diferentemente da versão anterior, que armazenava os dados em memória, este projeto utiliza MariaDB/MySQL para persistência dos dados, com Spring Data JPA e Hibernate.
-
-A API também conta com autenticação e segurança utilizando Spring Security e JWT (JSON Web Token).
+Os dados são armazenados em banco de dados relacional, utilizando Spring Data JPA e Hibernate para o mapeamento e gerenciamento das entidades.
 
 ## Tecnologias utilizadas
 
 - Java 17
 - Spring Boot 3
+- Spring Web
 - Spring Security
-- JWT (JSON Web Token)
+- JWT (JJWT)
 - Spring Data JPA
 - Hibernate
 - MariaDB / MySQL
-- Lombok
+- MySQL Connector/J
 - Bean Validation
 - Maven
 - Git e GitHub
@@ -36,16 +36,39 @@ A API também conta com autenticação e segurança utilizando Spring Security e
 ```text
 src/main/java/br/com/estoque/
 ├── controller/
-│   └── Controladores REST (Endpoints da API)
+│   ├── AuthController.java
+│   ├── EstoqueController.java
+│   ├── ProdutoController.java
+│   └── UsuarioController.java
+├── dao/
+│   ├── EstoqueDAO.java
+│   ├── ProdutoDAO.java
+│   └── UsuarioDAO.java
+├── dto/
+│   ├── EstoqueDTO.java
+│   ├── LoginDTO.java
+│   ├── ProdutoDTO.java
+│   ├── TokenDTO.java
+│   └── UsuarioDTO.java
+├── exception/
+│   ├── BusinessException.java
+│   ├── GlobalExceptionHandler.java
+│   └── ResourceNotFoundException.java
 ├── model/
+│   ├── Estoque.java
 │   ├── Produto.java
-│   └── Estoque.java
-├── repository/
-│   └── Repositórios de dados
+│   └── Usuario.java
 ├── security/
-│   └── Configurações de segurança e filtros JWT
-└── service/
-    └── Regras de negócio da aplicação
+│   ├── JwtFilter.java
+│   ├── JwtService.java
+│   ├── SecurityConfig.java
+│   └── UserDetailsServiceImpl.java
+├── service/
+│   ├── AuthService.java
+│   ├── EstoqueService.java
+│   ├── ProdutoService.java
+│   └── UsuarioService.java
+└── EstoqueApplication.java
 ```
 
 ## Como executar o projeto
@@ -58,9 +81,15 @@ git clone https://github.com/VitorWostehoff/estoque-rest-java.git
 
 ### 2. Configurar o banco de dados
 
-No arquivo `src/main/resources/application.properties`, configure as credenciais de acesso ao servidor MariaDB/MySQL.
+Crie um banco de dados chamado `estoque_db` no MariaDB ou MySQL.
 
-Também é possível utilizar variáveis de ambiente para configurar a senha do banco de dados.
+No arquivo `src/main/resources/application.properties`, configure as credenciais de acesso ao banco de dados:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/estoque_db
+spring.datasource.username=root
+spring.datasource.password=sua_senha
+```
 
 ### 3. Executar a aplicação
 

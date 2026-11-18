@@ -4,6 +4,7 @@ import br.com.estoque.dto.UsuarioAtualizacaoDTO;
 import br.com.estoque.dto.UsuarioCadastroDTO;
 import br.com.estoque.dto.UsuarioDTO;
 import br.com.estoque.exception.ConflictException;
+import br.com.estoque.exception.BusinessException;
 import br.com.estoque.exception.ResourceNotFoundException;
 import br.com.estoque.model.Usuario;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +35,24 @@ public class UsuarioService {
     }
     @Transactional(readOnly = true)
     public UsuarioDTO buscarPorId(Long id) { return toDTO(encontrar(id)); }
+    @Transactional(readOnly = true)
+    public List<UsuarioDTO> buscarPorEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new BusinessException("Informe um e-mail para a busca.");
+        }
+        return usuarioDAO.findByEmailContainingIgnoreCase(email.trim())
+                .stream().map(this::toDTO).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioDTO> buscarPorPerfil(String perfil) {
+        if (perfil == null || (!perfil.equalsIgnoreCase("ADMIN") && !perfil.equalsIgnoreCase("USER"))) {
+            throw new BusinessException("O perfil deve ser ADMIN ou USER.");
+        }
+        return usuarioDAO.findByRoleIgnoreCase(perfil)
+                .stream().map(this::toDTO).toList();
+    }
+
     @Transactional
     public UsuarioDTO atualizar(Long id, UsuarioAtualizacaoDTO dados) {
         Usuario usuario = encontrar(id);
@@ -42,7 +61,7 @@ public class UsuarioService {
             if (!outro.getId().equals(id)) throw new ConflictException("E-mail já cadastrado.");
         });
         usuario.setEmail(email);
-        if (dados.getSenha() != null && !dados.getSenha().isBlank()) {
+        if (dados.getSenha() != null) {
             usuario.setSenha(passwordEncoder.encode(dados.getSenha()));
         }
         return toDTO(usuarioDAO.save(usuario));

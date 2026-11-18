@@ -46,6 +46,8 @@ O administrador inicial é criado somente se o e-mail informado ainda não exist
 | GET | `/estoques/localizacao?localizacao=...` | Autenticado |
 | POST, PUT, DELETE | `/estoques` e `/estoques/{id}` | ADMIN |
 | GET, POST, PUT, DELETE | `/usuarios` e `/usuarios/{id}` | ADMIN |
+| GET | `/usuarios/busca?email=...` | ADMIN |
+| GET | `/usuarios/perfil?perfil=ADMIN` | ADMIN |
 
 O cadastro de usuários aceita `email`, `senha` e opcionalmente `role` (`USER` ou `ADMIN`). Somente ADMIN autenticado pode cadastrar usuários. Respostas dos endpoints de usuários não expõem a senha.
 
@@ -68,4 +70,4 @@ A exclusão de estoque com produtos associados retorna HTTP 409. Erros de valida
 
 ## Antes da entrega
 
-Execute `mvn clean test` e `mvn spring-boot:run` com MySQL configurado. Teste CRUD e buscas extras de estoques/produtos, persistência após reinício, respostas HTTP 400/401/403/404/409 e autenticação com os dois perfis. A aplicação não foi executada em um ambiente com Maven e MySQL durante essas alterações.
+Execute `mvn clean test` e `mvn spring-boot:run` com MySQL configurado. Teste CRUD e buscas extras de estoques/produtos/usuários, persistência após reinício, respostas HTTP 400/401/403/404/409 e autenticação com os dois perfis. A aplicação não foi executada em um ambiente com Maven e MySQL durante essas alterações.

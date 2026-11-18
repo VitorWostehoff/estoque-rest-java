@@ -33,8 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/usuarios/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/produtos/**", "/estoques/**").hasRole("ADMIN")
+                        .requestMatchers("/usuarios", "/usuarios/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/produtos", "/produtos/**", "/estoques", "/estoques/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/produtos/**", "/estoques/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/produtos/**", "/estoques/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/produtos/**", "/estoques/**").hasRole("ADMIN")

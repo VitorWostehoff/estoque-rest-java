@@ -1,0 +1,11 @@
+$kind: collection
+variables:
+  token: ""
+auth:
+  - id: 210260b6-b20b-4051-b5cd-f9f105724933
+    type: bearer
+    name: Bearer Token
+    credentials:
+      token: "{{token}}"
+    rules:
+      url: localhost:8080

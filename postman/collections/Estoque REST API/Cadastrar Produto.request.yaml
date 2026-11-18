@@ -1,0 +1,28 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/produtos
+method: POST
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Mouse Gamer",
+      "descricao": "Mouse sem fio",
+      "preco": 150.00,
+      "quantidade": 20,
+      "quantidadeMinima": 5,
+      "estoqueId": 2
+    }
+auth:
+  type: inherit
+  credentials:
+    id: 210260b6-b20b-4051-b5cd-f9f105724933
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+          const produto = pm.response.json();
+          pm.collectionVariables.set("produto_id", produto.id);
+      }
+    language: text/javascript
+order: 10000

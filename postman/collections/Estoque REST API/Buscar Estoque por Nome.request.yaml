@@ -1,0 +1,11 @@
+$kind: http-request
+description: ""
+url: "\thttp://localhost:8080/estoques/busca?nome=Estoque"
+method: GET
+queryParams:
+  nome: Estoque
+auth:
+  type: inherit
+  credentials:
+    id: 210260b6-b20b-4051-b5cd-f9f105724933
+order: 5000

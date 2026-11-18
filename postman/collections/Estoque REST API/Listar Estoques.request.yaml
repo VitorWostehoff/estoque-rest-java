@@ -2,4 +2,7 @@ $kind: http-request
 description: ""
 url: http://localhost:8080/estoques
 method: GET
+body:
+  type: json
+  content: ""
 order: 2000

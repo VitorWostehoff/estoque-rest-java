@@ -1,151 +1,71 @@
 # Estoque REST API
 
-Sistema de gestão de estoque desenvolvido em Java utilizando Spring Boot, como evolução do projeto anterior desenvolvido com Web Services SOAP, agora utilizando uma API RESTful, autenticação com JWT e persistência em banco de dados relacional.
+API REST de estoques, produtos e usuários com Java 17, Spring Boot 3, JPA, MySQL e JWT.
 
-## Sobre o projeto
+## Configuração
 
-O objetivo do projeto é desenvolver uma API REST para o gerenciamento de estoque de pequenas empresas.
+Crie o banco no MySQL:
 
-O sistema possui três entidades principais:
-
-- **Produto:** armazena informações como nome, descrição, preço, quantidade e quantidade mínima, além do vínculo com um estoque.
-- **Estoque:** representa o local onde os produtos são armazenados.
-- **Usuário:** armazena informações de acesso e perfil dos usuários do sistema.
-
-A aplicação possui operações de CRUD para produtos, funcionalidades de cadastro e consulta de usuários e autenticação por meio de JWT (JSON Web Token).
-
-Os dados são armazenados em banco de dados relacional, utilizando Spring Data JPA e Hibernate para o mapeamento e gerenciamento das entidades.
-
-## Tecnologias utilizadas
-
-- Java 17
-- Spring Boot 3
-- Spring Web
-- Spring Security
-- JWT (JJWT)
-- Spring Data JPA
-- Hibernate
-- MariaDB / MySQL
-- MySQL Connector/J
-- Bean Validation
-- Maven
-- Git e GitHub
-
-## Estrutura do projeto
-
-```text
-src/main/java/br/com/estoque/
-├── controller/
-│   ├── AuthController.java
-│   ├── EstoqueController.java
-│   ├── ProdutoController.java
-│   └── UsuarioController.java
-├── dao/
-│   ├── EstoqueDAO.java
-│   ├── ProdutoDAO.java
-│   └── UsuarioDAO.java
-├── dto/
-│   ├── EstoqueDTO.java
-│   ├── LoginDTO.java
-│   ├── ProdutoDTO.java
-│   ├── TokenDTO.java
-│   └── UsuarioDTO.java
-├── exception/
-│   ├── BusinessException.java
-│   ├── GlobalExceptionHandler.java
-│   └── ResourceNotFoundException.java
-├── model/
-│   ├── Estoque.java
-│   ├── Produto.java
-│   └── Usuario.java
-├── security/
-│   ├── JwtFilter.java
-│   ├── JwtService.java
-│   ├── SecurityConfig.java
-│   └── UserDetailsServiceImpl.java
-├── service/
-│   ├── AuthService.java
-│   ├── EstoqueService.java
-│   ├── ProdutoService.java
-│   └── UsuarioService.java
-└── EstoqueApplication.java
+```sql
+CREATE DATABASE IF NOT EXISTS estoque_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-## Como executar o projeto
+Configure o ambiente antes de iniciar:
 
-### 1. Clonar o repositório
+- `DB_URL`: opcional, padrão `jdbc:mysql://localhost:3306/estoque_db`
+- `DB_USERNAME`: opcional, padrão `root`
+- `DB_PASSWORD`: senha do MySQL
+- `JWT_SECRET`: obrigatório, segredo Base64 que decodifica pelo menos 32 bytes
+- `ADMIN_EMAIL`: e-mail do primeiro administrador
+- `ADMIN_PASSWORD`: senha do primeiro administrador, com no mínimo oito caracteres
+
+No macOS/Linux:
 
 ```bash
-git clone https://github.com/VitorWostehoff/estoque-rest-java.git
-```
-
-### 2. Configurar o banco de dados
-
-Crie um banco de dados chamado `estoque_db` no MariaDB ou MySQL.
-
-No arquivo `src/main/resources/application.properties`, configure as credenciais de acesso ao banco de dados:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/estoque_db
-spring.datasource.username=root
-spring.datasource.password=sua_senha
-```
-
-### 3. Executar a aplicação
-
-Na pasta do projeto, execute:
-
-```bash
+export DB_USERNAME=root
+export DB_PASSWORD='senha_do_mysql'
+export JWT_SECRET="$(openssl rand -base64 32)"
+export ADMIN_EMAIL='admin@exemplo.com'
+export ADMIN_PASSWORD='defina_uma_senha_forte'
 mvn spring-boot:run
 ```
 
-## Instruções para os integrantes da equipe
+O administrador inicial é criado somente se o e-mail informado ainda não existir. Alterar as variáveis depois não troca a senha da conta criada. Nunca envie segredos reais ao GitHub.
 
-Esta seção contém instruções básicas de Git para os integrantes responsáveis pelo desenvolvimento do projeto.
+## Endpoints
 
-### Antes de começar a programar
+| Método | Caminho | Acesso |
+|---|---|---|
+| POST | `/auth/login` | Público |
+| GET | `/produtos` e `/produtos/{id}` | Autenticado |
+| GET | `/produtos/busca?nome=...` | Autenticado |
+| GET | `/produtos/preco?minimo=...&maximo=...` | Autenticado |
+| POST, PUT, DELETE | `/produtos` e `/produtos/{id}` | ADMIN |
+| GET | `/estoques` e `/estoques/{id}` | Autenticado |
+| GET | `/estoques/busca?nome=...` | Autenticado |
+| GET | `/estoques/localizacao?localizacao=...` | Autenticado |
+| POST, PUT, DELETE | `/estoques` e `/estoques/{id}` | ADMIN |
+| GET, POST, PUT, DELETE | `/usuarios` e `/usuarios/{id}` | ADMIN |
 
-Sempre atualize sua cópia local do projeto antes de realizar alterações:
+O cadastro de usuários aceita `email`, `senha` e opcionalmente `role` (`USER` ou `ADMIN`). Somente ADMIN autenticado pode cadastrar usuários. Respostas dos endpoints de usuários não expõem a senha.
 
-```bash
-git pull --rebase
+Faça login em `POST /auth/login` com JSON `{"email":"admin@exemplo.com","senha":"defina_uma_senha_forte"}` e passe o token nas chamadas protegidas:
+
+```text
+Authorization: Bearer SEU_TOKEN
 ```
 
-Depois disso, faça suas alterações normalmente.
-
-### Quando terminar suas alterações
-
-Adicione os arquivos modificados:
+Exemplo:
 
 ```bash
-git add .
+curl -X POST http://localhost:8080/estoques \
+  -H 'Authorization: Bearer SEU_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{"nome":"Principal","localizacao":"Blumenau"}'
 ```
 
-Crie um commit descrevendo o que foi feito:
+A exclusão de estoque com produtos associados retorna HTTP 409. Erros de validação retornam HTTP 400 e recursos inexistentes, HTTP 404. Rotas protegidas sem autenticação retornam HTTP 401; ações sem permissão devem retornar HTTP 403.
 
-```bash
-git commit -m "descreva o que foi feito"
-```
+## Antes da entrega
 
-Antes de enviar, atualize novamente sua branch local:
-
-```bash
-git pull --rebase
-```
-
-Por fim, envie as alterações para o GitHub:
-
-```bash
-git push origin main
-```
-
-### Fluxo resumido
-
-1. `git pull --rebase`
-2. Fazer as alterações no código
-3. `git add .`
-4. `git commit -m "mensagem do commit"`
-5. `git pull --rebase`
-6. `git push origin main`
-
-**Importante:** não começar a desenvolver sem antes executar `git pull --rebase`. Isso ajuda a garantir que você esteja trabalhando com a versão mais recente do projeto e reduz a possibilidade de conflitos com alterações realizadas por outros integrantes.
+Execute `mvn clean test` e `mvn spring-boot:run` com MySQL configurado. Teste CRUD e buscas extras de estoques/produtos, persistência após reinício, respostas HTTP 400/401/403/404/409 e autenticação com os dois perfis. A aplicação não foi executada em um ambiente com Maven e MySQL durante essas alterações.

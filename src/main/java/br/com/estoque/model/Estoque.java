@@ -1,59 +1,27 @@
 package br.com.estoque.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 @Table(name = "estoque")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Estoque {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String nome;
-
-    @Column(nullable = false)
+    @Column(nullable = false, length = 150)
     private String localizacao;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "estoque")
     private List<Produto> produtos = new ArrayList<>();
-
-    public Estoque() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getLocalizacao() {
-        return localizacao;
-    }
-
-    public void setLocalizacao(String localizacao) {
-        this.localizacao = localizacao;
-    }
-
-    public List<Produto> getProdutos() {
-        return produtos;
-    }
-
-    public void setProdutos(List<Produto> produtos) {
-        this.produtos = produtos;
-    }
+    public Estoque() {}
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getLocalizacao() { return localizacao; }
+    public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
+    public List<Produto> getProdutos() { return produtos; }
+    public void setProdutos(List<Produto> produtos) { this.produtos = produtos; }
 }

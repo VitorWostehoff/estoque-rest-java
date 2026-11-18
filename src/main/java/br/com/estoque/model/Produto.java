@@ -25,7 +25,7 @@ public class Produto {
     @Column(nullable = false)
     private int quantidadeMinima;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnoreProperties("produtos")
     @JoinColumn(name = "estoque_id", nullable = false)
     private Estoque estoque;

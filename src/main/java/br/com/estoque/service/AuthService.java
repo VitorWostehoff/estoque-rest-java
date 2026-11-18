@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import java.util.Locale;
 
 @Service
 public class AuthService {
@@ -24,11 +25,12 @@ public class AuthService {
     private JwtService jwtService;
 
     public TokenDTO logar(LoginDTO dto) {
+        String email = dto.getEmail().trim().toLowerCase(Locale.ROOT);
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getSenha())
+                new UsernamePasswordAuthenticationToken(email, dto.getSenha())
         );
 
-        Usuario usuario = usuarioDAO.findByEmail(dto.getEmail())
+        Usuario usuario = usuarioDAO.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
         String token = jwtService.generateToken(usuario);

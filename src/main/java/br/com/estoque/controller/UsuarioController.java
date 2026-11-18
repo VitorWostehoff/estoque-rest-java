@@ -21,6 +21,16 @@ public class UsuarioController {
     public ResponseEntity<List<UsuarioDTO>> listarTodos() {
         return ResponseEntity.ok(usuarioService.listarTodos());
     }
+    @GetMapping("/busca")
+    public ResponseEntity<List<UsuarioDTO>> buscarPorEmail(@RequestParam String email) {
+        return ResponseEntity.ok(usuarioService.buscarPorEmail(email));
+    }
+
+    @GetMapping("/perfil")
+    public ResponseEntity<List<UsuarioDTO>> buscarPorPerfil(@RequestParam String perfil) {
+        return ResponseEntity.ok(usuarioService.buscarPorPerfil(perfil));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.buscarPorId(id));

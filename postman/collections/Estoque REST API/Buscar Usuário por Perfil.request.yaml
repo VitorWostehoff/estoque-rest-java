@@ -1,0 +1,11 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/usuarios/perfil?perfil=ADMIN
+method: GET
+queryParams:
+  perfil: ADMIN
+auth:
+  type: inherit
+  credentials:
+    id: 210260b6-b20b-4051-b5cd-f9f105724933
+order: 19000

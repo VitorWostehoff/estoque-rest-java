@@ -17,4 +17,4 @@ auth:
   type: inherit
   credentials:
     id: 210260b6-b20b-4051-b5cd-f9f105724933
-order: 14000
+order: 6000

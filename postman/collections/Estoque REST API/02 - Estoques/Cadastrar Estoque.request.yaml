@@ -21,4 +21,4 @@ scripts:
           pm.collectionVariables.set("estoque_id", estoque.id);
       }
     language: text/javascript
-order: 3000
+order: 2000

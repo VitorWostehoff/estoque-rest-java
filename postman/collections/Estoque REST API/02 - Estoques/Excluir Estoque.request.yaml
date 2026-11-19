@@ -2,4 +2,4 @@ $kind: http-request
 description: ""
 url: http://localhost:8080/estoques/{{estoque_id}}
 method: DELETE
-order: 8000
+order: 6000

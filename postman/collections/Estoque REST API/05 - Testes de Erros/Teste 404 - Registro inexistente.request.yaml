@@ -1,12 +1,9 @@
 $kind: http-request
 description: ""
-url: http://localhost:8080/produtos/preco?minimo=100&maximo=200
+url: http://localhost:8080/produtos/99999
 method: GET
-queryParams:
-  minimo: "100"
-  maximo: "200"
 auth:
   type: inherit
   credentials:
     id: 210260b6-b20b-4051-b5cd-f9f105724933
-order: 13000
+order: 4000

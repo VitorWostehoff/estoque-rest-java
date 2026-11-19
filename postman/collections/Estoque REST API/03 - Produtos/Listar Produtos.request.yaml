@@ -1,8 +1,8 @@
 $kind: http-request
 description: ""
-url: http://localhost:8080/estoques
+url: http://localhost:8080/produtos
 method: GET
 body:
   type: json
   content: ""
-order: 2000
+order: 1000

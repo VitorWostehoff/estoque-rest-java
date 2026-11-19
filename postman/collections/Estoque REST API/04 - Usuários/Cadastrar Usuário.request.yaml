@@ -18,4 +18,4 @@ scripts:
           pm.collectionVariables.set("usuario_id", usuario.id);
       }
     language: text/javascript
-order: 20000
+order: 250

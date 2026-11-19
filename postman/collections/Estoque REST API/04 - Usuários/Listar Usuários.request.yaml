@@ -1,11 +1,9 @@
 $kind: http-request
 description: ""
-url: http://localhost:8080/usuarios/busca?email=admin
+url: http://localhost:8080/usuarios
 method: GET
-queryParams:
-  email: admin
 auth:
   type: inherit
   credentials:
     id: 210260b6-b20b-4051-b5cd-f9f105724933
-order: 18000
+order: 214

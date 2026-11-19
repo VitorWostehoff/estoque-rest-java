@@ -1,9 +1,11 @@
 $kind: http-request
 description: ""
-url: http://localhost:8080/usuarios/{{usuario_id}}
+url: "\thttp://localhost:8080/estoques/busca?nome=Estoque"
 method: GET
+queryParams:
+  nome: Estoque
 auth:
   type: inherit
   credentials:
     id: 210260b6-b20b-4051-b5cd-f9f105724933
-order: 17000
+order: 4000

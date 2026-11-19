@@ -1,14 +1,32 @@
 $kind: collection
 variables:
-  token: ""
-  estoque_id: ""
-  produto_id: ""
-  usuario_id: ""
+  - key: token
+    secret: true
+    disabled: false
+  - key: estoque_id
+    value: ""
+    disabled: false
+  - key: produto_id
+    value: ""
+    disabled: false
+  - key: usuario_id
+    value: ""
+    disabled: false
+  - key: token_user
+    secret: true
+    disabled: false
 auth:
   - id: 210260b6-b20b-4051-b5cd-f9f105724933
     type: bearer
-    name: Bearer Token
+    name: Bearer Token JWT Admin
     credentials:
       token: "{{token}}"
+    rules:
+      url: localhost:8080
+  - id: cf81b34e-a121-4f20-9bea-e9cc94bef344
+    type: bearer
+    name: Bear Token JWT User
+    credentials:
+      token: "{{token_user}}"
     rules:
       url: localhost:8080

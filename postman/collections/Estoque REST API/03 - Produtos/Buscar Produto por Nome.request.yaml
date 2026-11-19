@@ -4,4 +4,4 @@ url: http://localhost:8080/produtos/busca?nome=Mouse
 method: GET
 queryParams:
   nome: Mouse
-order: 12000
+order: 4000

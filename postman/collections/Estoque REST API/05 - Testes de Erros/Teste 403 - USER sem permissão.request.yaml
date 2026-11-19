@@ -1,0 +1,16 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/estoques
+method: POST
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Estoque Teste Permissao",
+      "localizacao": "Blumenau"
+    }
+auth:
+  type: inherit
+  credentials:
+    id: cf81b34e-a121-4f20-9bea-e9cc94bef344
+order: 3000

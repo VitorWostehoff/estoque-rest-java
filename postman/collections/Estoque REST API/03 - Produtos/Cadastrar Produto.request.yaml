@@ -25,4 +25,4 @@ scripts:
           pm.collectionVariables.set("produto_id", produto.id);
       }
     language: text/javascript
-order: 10000
+order: 2000

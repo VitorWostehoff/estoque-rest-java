@@ -12,10 +12,10 @@ public class Estoque {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id_estoque")
     private int id;
 
-    @Column(name = "nm_nome", nullable = false, length = 100)
+    @Column(name = "nm_estoque", nullable = false, length = 100)
     private String nome;
 
     @Column(name = "ds_localizacao", nullable = false, length = 150)

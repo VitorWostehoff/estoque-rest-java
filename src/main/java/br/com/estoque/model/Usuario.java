@@ -9,12 +9,13 @@ import java.util.List;
 @Table(name = "usuarios")
 public class Usuario implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_usuario")
     private Long id;
-    @Column(nullable = false, unique = true)
+    @Column(name = "ds_email", nullable = false, unique = true)
     private String email;
-    @Column(nullable = false)
+    @Column(name = "ds_senha", nullable = false)
     private String senha;
-    @Column(nullable = false)
+    @Column(name = "nm_role", nullable = false)
     private String role;
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

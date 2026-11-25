@@ -4,30 +4,31 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "produto")
+@Table(name = "produtos")
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_produto")
     private int id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "nm_produto", nullable = false, length = 100)
     private String nome;
 
-    @Column(length = 500)
+    @Column(name = "ds_produto", length = 500)
     private String descricao;
 
-    @Column(nullable = false)
+    @Column(name = "vl_preco", nullable = false)
     private double preco;
 
-    @Column(nullable = false)
+    @Column(name = "qt_produto", nullable = false)
     private int quantidade;
 
-    @Column(nullable = false)
+    @Column(name= "qt_minima", nullable = false)
     private int quantidadeMinima;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnoreProperties("produtos")
-    @JoinColumn(name = "estoque_id", nullable = false)
+    @JoinColumn(name = "id_estoque", nullable = false)
     private Estoque estoque;
 
     public Produto() {

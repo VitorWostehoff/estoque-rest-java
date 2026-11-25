@@ -1,0 +1,12 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/estoques/{{estoque_id}}
+method: PUT
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Estoque Atualizado",
+      "localizacao": "Joinville"
+    }
+order: 105

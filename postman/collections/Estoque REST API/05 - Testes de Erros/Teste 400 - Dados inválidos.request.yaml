@@ -1,0 +1,20 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/produtos
+method: POST
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Produto Invalido",
+      "descricao": "Teste de validacao",
+      "preco": -50,
+      "quantidade": -10,
+      "quantidadeMinima": 5,
+      "estoqueId": 2
+    }
+auth:
+  type: inherit
+  credentials:
+    id: 210260b6-b20b-4051-b5cd-f9f105724933
+order: 1000

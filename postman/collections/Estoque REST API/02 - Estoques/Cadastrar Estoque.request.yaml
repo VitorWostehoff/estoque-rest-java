@@ -1,0 +1,24 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/estoques
+method: POST
+body:
+  type: json
+  content: |-
+    {
+        "nome": "Estoque Apresentacao",
+        "localizacao": "Blumenau"
+    }
+auth:
+  type: inherit
+  credentials:
+    id: 210260b6-b20b-4051-b5cd-f9f105724933
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201 || pm.response.code === 200) {
+          const estoque = pm.response.json();
+          pm.collectionVariables.set("estoque_id", estoque.id);
+      }
+    language: text/javascript
+order: 2000

@@ -1,0 +1,20 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/produtos/{{produto_id}}
+method: PUT
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Mouse Gamer Atualizado",
+      "descricao": "Mouse sem fio com RGB",
+      "preco": 180.00,
+      "quantidade": 30,
+      "quantidadeMinima": 10,
+      "estoqueId": 2
+    }
+auth:
+  type: inherit
+  credentials:
+    id: 210260b6-b20b-4051-b5cd-f9f105724933
+order: 6000

@@ -1,0 +1,17 @@
+# Use this workspace to collaborate
+workspace:
+  id: f6a22bac-1840-4aaa-8324-788e476d4e3e
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../postman/collections/Estoque REST API: 6afe1f6b33073e95b092c728
+  globals:
+    ../postman/globals/workspace.globals.yaml: 6b5bee24-bf30-41d2-85f1-07b4c249ce98
+
+# All resources in the `postman/` folder are automatically registered in Local View.
+# Point to additional files outside the `postman/` folder to register them individually. Example:
+#localResources:
+#  collections:
+#    - ../tests/E2E Test Collection/

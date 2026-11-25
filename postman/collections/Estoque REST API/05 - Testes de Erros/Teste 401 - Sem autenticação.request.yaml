@@ -1,0 +1,7 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/estoques
+method: GET
+auth:
+  type: noauth
+order: 2000

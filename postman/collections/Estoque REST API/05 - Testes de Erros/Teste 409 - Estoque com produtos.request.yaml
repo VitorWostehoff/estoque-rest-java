@@ -1,0 +1,9 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/estoques/2
+method: DELETE
+auth:
+  type: inherit
+  credentials:
+    id: 210260b6-b20b-4051-b5cd-f9f105724933
+order: 5000

@@ -1,0 +1,11 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/estoques/localizacao?localizacao=Blumenau
+method: GET
+queryParams:
+  localizacao: Blumenau
+auth:
+  type: inherit
+  credentials:
+    id: 210260b6-b20b-4051-b5cd-f9f105724933
+order: 5000

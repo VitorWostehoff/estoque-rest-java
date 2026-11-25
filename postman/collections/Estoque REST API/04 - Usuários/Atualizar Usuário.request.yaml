@@ -1,0 +1,17 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/usuarios/{{usuario_id}}
+method: PUT
+body:
+  type: json
+  content: |-
+    {
+      "email": "usuario.atualizado@estoque.local",
+      "senha": "NovaSenha@2026!",
+      "role": "USER"
+    }
+auth:
+  type: inherit
+  credentials:
+    id: 210260b6-b20b-4051-b5cd-f9f105724933
+order: 3301

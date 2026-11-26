@@ -1,0 +1,1074 @@
+openapi: 3.0.3
+info:
+  title: Estoque REST API - Documentação dos serviços
+  description: |
+    Esta documentação apresenta 15 serviços da API Estoque REST, desenvolvida em Java com Spring Boot.
+
+    A API permite cadastrar, consultar, atualizar e excluir produtos, estoques e usuários.
+
+    Acesso: ADMIN pode consultar e alterar dados; USER pode consultar produtos e estoques. Para acessar as rotas protegidas, faça login em POST /auth/login e informe o token JWT em Authorize. O token vale 24 horas.
+
+    Cada serviço mostra o que faz, quais dados recebe e quais respostas pode devolver. Os exemplos são ilustrativos: os IDs podem ser diferentes no seu banco.
+
+    Este arquivo OpenAPI documenta 15 serviços selecionados da API; existem outras rotas implementadas.
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+  description: API real em execução no computador
+security:
+- bearerAuth: []
+tags:
+- name: Autenticação
+  description: Login para receber um token JWT
+- name: Produtos
+  description: Consultar e gerenciar produtos
+- name: Estoques
+  description: Consultar e gerenciar estoques
+- name: Usuários
+  description: Gerenciar contas de usuários (somente ADMIN)
+paths:
+  /auth/login:
+    post:
+      tags:
+      - Autenticação
+      summary: Fazer login
+      description: Recebe e-mail e senha. Se estiverem corretos, devolve um token JWT válido por 24 
+        horas. Não precisa de token para fazer login.
+      operationId: login
+      requestBody:
+        description: Informe os dados abaixo em JSON.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDTO'
+            example:
+              email: admin@exemplo.com
+              senha: senhaExemplo123
+        required: true
+      responses:
+        '200':
+          description: Login feito com sucesso. O JWT é devolvido no corpo da resposta.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenDTO'
+              example:
+                token: eyJhbGciOiJIUzI1NiJ9.EXEMPLO.ASSINATURA
+                tipo: Bearer
+        '400':
+          description: 'Dados inválidos ou JSON ausente/incorreto. Exemplo: email: Informe um e-mail válido.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 400
+                erro: Bad Request
+                mensagem: 'email: Informe um e-mail válido.'
+                data: '2026-11-25T15:00:00'
+        '401':
+          description: E-mail ou senha incorretos.
+        '415':
+          description: O formato enviado não é aceito. Envie o corpo da requisição como 
+            application/json.
+      security: []
+  /produtos:
+    get:
+      tags:
+      - Produtos
+      summary: Listar todos os produtos
+      description: 'Mostra todos os produtos cadastrados, com os dados do estoque de cada um. Acesso:
+        USER ou ADMIN.'
+      operationId: listarProdutos
+      responses:
+        '200':
+          description: Lista de registros encontrada. Se não houver nenhum, retorna uma lista vazia.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Produto'
+              example:
+              - id: 3
+                nome: Mouse Gamer
+                descricao: Mouse sem fio
+                preco: 150.0
+                quantidade: 20
+                quantidadeMinima: 5
+                estoque:
+                  id: 2
+                  nome: Estoque Principal
+                  localizacao: Blumenau
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+    post:
+      tags:
+      - Produtos
+      summary: Cadastrar produto
+      description: 'Cadastra um produto em um estoque que já existe. O nome, o preço, as quantidades e
+        o ID do estoque precisam ser válidos. Acesso: ADMIN.'
+      operationId: cadastrarProduto
+      requestBody:
+        description: Informe os dados abaixo em JSON.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProdutoDTO'
+            example:
+              nome: Mouse Gamer
+              descricao: Mouse sem fio
+              preco: 150.0
+              quantidade: 20
+              quantidadeMinima: 5
+              estoqueId: 2
+        required: true
+      responses:
+        '201':
+          description: Produto cadastrado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+              example:
+                id: 3
+                nome: Mouse Gamer
+                descricao: Mouse sem fio
+                preco: 150.0
+                quantidade: 20
+                quantidadeMinima: 5
+                estoque:
+                  id: 2
+                  nome: Estoque Principal
+                  localizacao: Blumenau
+        '400':
+          description: 'Dados inválidos ou JSON ausente/incorreto. Exemplo: nome: O nome do produto é
+            obrigatório.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 400
+                erro: Bad Request
+                mensagem: 'nome: O nome do produto é obrigatório.'
+                data: '2026-11-25T15:00:00'
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '403':
+          description: Usuário autenticado, mas sem permissão ADMIN para esta operação.
+        '404':
+          description: O estoque informado em estoqueId não existe.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 404
+                erro: Not Found
+                mensagem: Estoque com ID 2 não encontrado.
+                data: '2026-11-25T15:00:00'
+        '415':
+          description: O formato enviado não é aceito. Envie o corpo da requisição como 
+            application/json.
+        '409':
+          description: O banco de dados não permitiu a operação por uma regra de integridade.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 409
+                erro: Conflict
+                mensagem: A operação viola uma regra de integridade do banco de dados.
+                data: '2026-11-25T15:00:00'
+      x-required-role: ADMIN
+  /produtos/{id}:
+    get:
+      tags:
+      - Produtos
+      summary: Consultar produto pelo ID
+      description: 'Mostra o produto informado pelo ID. Acesso: USER ou ADMIN.'
+      operationId: buscarProdutoPorId
+      parameters:
+      - name: id
+        in: path
+        description: ID do registro que você quer consultar, alterar ou excluir.
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 3
+      responses:
+        '200':
+          description: Consulta realizada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+              example:
+                id: 3
+                nome: Mouse Gamer
+                descricao: Mouse sem fio
+                preco: 150.0
+                quantidade: 20
+                quantidadeMinima: 5
+                estoque:
+                  id: 2
+                  nome: Estoque Principal
+                  localizacao: Blumenau
+        '400':
+          description: O ID precisa ser um número inteiro. O formato da resposta pode variar, pois 
+            esse erro é tratado pelo Spring.
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '404':
+          description: Produto não encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 404
+                erro: Not Found
+                mensagem: Produto com ID 3 não encontrado.
+                data: '2026-11-25T15:00:00'
+    put:
+      tags:
+      - Produtos
+      summary: Atualizar produto
+      description: 'Atualiza um produto existente. Envie todos os campos obrigatórios, inclusive o ID
+        do estoque. Acesso: ADMIN.'
+      operationId: atualizarProduto
+      parameters:
+      - name: id
+        in: path
+        description: ID do registro que você quer consultar, alterar ou excluir.
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 3
+      requestBody:
+        description: Informe os dados abaixo em JSON.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProdutoDTO'
+            example:
+              nome: Mouse Gamer
+              descricao: Mouse sem fio
+              preco: 150.0
+              quantidade: 20
+              quantidadeMinima: 5
+              estoqueId: 2
+        required: true
+      responses:
+        '200':
+          description: Dados atualizados com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+              example:
+                id: 3
+                nome: Mouse Gamer
+                descricao: Mouse sem fio
+                preco: 150.0
+                quantidade: 20
+                quantidadeMinima: 5
+                estoque:
+                  id: 2
+                  nome: Estoque Principal
+                  localizacao: Blumenau
+        '400':
+          description: 'Dados inválidos ou JSON ausente/incorreto. Exemplo: nome: O nome do produto é
+            obrigatório.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 400
+                erro: Bad Request
+                mensagem: 'nome: O nome do produto é obrigatório.'
+                data: '2026-11-25T15:00:00'
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '403':
+          description: Usuário autenticado, mas sem permissão ADMIN para esta operação.
+        '404':
+          description: O produto ou o estoque informado não existe. O exemplo mostra um produto 
+            ausente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 404
+                erro: Not Found
+                mensagem: Produto com ID 3 não encontrado.
+                data: '2026-11-25T15:00:00'
+        '415':
+          description: O formato enviado não é aceito. Envie o corpo da requisição como 
+            application/json.
+        '409':
+          description: O banco de dados não permitiu a operação por uma regra de integridade.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 409
+                erro: Conflict
+                mensagem: A operação viola uma regra de integridade do banco de dados.
+                data: '2026-11-25T15:00:00'
+      x-required-role: ADMIN
+    delete:
+      tags:
+      - Produtos
+      summary: Excluir produto
+      description: 'Exclui o produto informado pelo ID. Acesso: ADMIN.'
+      operationId: excluirProduto
+      parameters:
+      - name: id
+        in: path
+        description: ID do registro que você quer consultar, alterar ou excluir.
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 3
+      responses:
+        '204':
+          description: Registro excluído. A resposta não possui corpo.
+        '400':
+          description: O ID precisa ser um número inteiro. O formato da resposta pode variar, pois 
+            esse erro é tratado pelo Spring.
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '403':
+          description: Usuário autenticado, mas sem permissão ADMIN para esta operação.
+        '404':
+          description: Produto não encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 404
+                erro: Not Found
+                mensagem: Produto com ID 3 não encontrado.
+                data: '2026-11-25T15:00:00'
+        '409':
+          description: O banco de dados não permitiu a operação por uma regra de integridade.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 409
+                erro: Conflict
+                mensagem: A operação viola uma regra de integridade do banco de dados.
+                data: '2026-11-25T15:00:00'
+      x-required-role: ADMIN
+  /estoques:
+    get:
+      tags:
+      - Estoques
+      summary: Listar todos os estoques
+      description: 'Mostra todos os estoques cadastrados. Acesso: USER ou ADMIN.'
+      operationId: listarEstoques
+      responses:
+        '200':
+          description: Lista de registros encontrada. Se não houver nenhum, retorna uma lista vazia.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Estoque'
+              example:
+              - id: 2
+                nome: Estoque Principal
+                localizacao: Blumenau
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+    post:
+      tags:
+      - Estoques
+      summary: Cadastrar estoque
+      description: 'Cadastra um estoque com nome e localização. Os dois campos são obrigatórios. Acesso:
+        ADMIN.'
+      operationId: cadastrarEstoque
+      requestBody:
+        description: Informe os dados abaixo em JSON.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstoqueDTO'
+            example:
+              nome: Estoque Principal
+              localizacao: Blumenau
+        required: true
+      responses:
+        '201':
+          description: Estoque cadastrado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Estoque'
+              example:
+                id: 2
+                nome: Estoque Principal
+                localizacao: Blumenau
+        '400':
+          description: 'Dados inválidos ou JSON ausente/incorreto. Exemplo: nome: O nome do estoque é
+            obrigatório.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 400
+                erro: Bad Request
+                mensagem: 'nome: O nome do estoque é obrigatório.'
+                data: '2026-11-25T15:00:00'
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '403':
+          description: Usuário autenticado, mas sem permissão ADMIN para esta operação.
+        '415':
+          description: O formato enviado não é aceito. Envie o corpo da requisição como 
+            application/json.
+        '409':
+          description: O banco de dados não permitiu a operação por uma regra de integridade.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 409
+                erro: Conflict
+                mensagem: A operação viola uma regra de integridade do banco de dados.
+                data: '2026-11-25T15:00:00'
+      x-required-role: ADMIN
+  /estoques/{id}:
+    get:
+      tags:
+      - Estoques
+      summary: Consultar estoque pelo ID
+      description: 'Mostra o estoque informado pelo ID. Acesso: USER ou ADMIN.'
+      operationId: buscarEstoquePorId
+      parameters:
+      - name: id
+        in: path
+        description: ID do registro que você quer consultar, alterar ou excluir.
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 2
+      responses:
+        '200':
+          description: Consulta realizada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Estoque'
+              example:
+                id: 2
+                nome: Estoque Principal
+                localizacao: Blumenau
+        '400':
+          description: O ID precisa ser um número inteiro. O formato da resposta pode variar, pois 
+            esse erro é tratado pelo Spring.
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '404':
+          description: Estoque não encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 404
+                erro: Not Found
+                mensagem: Estoque com ID 2 não encontrado.
+                data: '2026-11-25T15:00:00'
+    put:
+      tags:
+      - Estoques
+      summary: Atualizar estoque
+      description: 'Altera o nome e a localização de um estoque existente. Acesso: ADMIN.'
+      operationId: atualizarEstoque
+      parameters:
+      - name: id
+        in: path
+        description: ID do registro que você quer consultar, alterar ou excluir.
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 2
+      requestBody:
+        description: Informe os dados abaixo em JSON.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstoqueDTO'
+            example:
+              nome: Estoque Principal
+              localizacao: Blumenau
+        required: true
+      responses:
+        '200':
+          description: Dados atualizados com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Estoque'
+              example:
+                id: 2
+                nome: Estoque Principal
+                localizacao: Blumenau
+        '400':
+          description: 'Dados inválidos ou JSON ausente/incorreto. Exemplo: nome: O nome do estoque é
+            obrigatório.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 400
+                erro: Bad Request
+                mensagem: 'nome: O nome do estoque é obrigatório.'
+                data: '2026-11-25T15:00:00'
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '403':
+          description: Usuário autenticado, mas sem permissão ADMIN para esta operação.
+        '404':
+          description: Estoque não encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 404
+                erro: Not Found
+                mensagem: Estoque com ID 2 não encontrado.
+                data: '2026-11-25T15:00:00'
+        '415':
+          description: O formato enviado não é aceito. Envie o corpo da requisição como 
+            application/json.
+        '409':
+          description: O banco de dados não permitiu a operação por uma regra de integridade.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 409
+                erro: Conflict
+                mensagem: A operação viola uma regra de integridade do banco de dados.
+                data: '2026-11-25T15:00:00'
+      x-required-role: ADMIN
+    delete:
+      tags:
+      - Estoques
+      summary: Excluir estoque
+      description: 'Exclui um estoque, desde que nenhum produto esteja ligado a ele. Caso tenha produtos,
+        retorna 409. Acesso: ADMIN.'
+      operationId: excluirEstoque
+      parameters:
+      - name: id
+        in: path
+        description: ID do registro que você quer consultar, alterar ou excluir.
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 2
+      responses:
+        '204':
+          description: Registro excluído. A resposta não possui corpo.
+        '400':
+          description: O ID precisa ser um número inteiro. O formato da resposta pode variar, pois 
+            esse erro é tratado pelo Spring.
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '403':
+          description: Usuário autenticado, mas sem permissão ADMIN para esta operação.
+        '404':
+          description: Estoque não encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 404
+                erro: Not Found
+                mensagem: Estoque com ID 2 não encontrado.
+                data: '2026-11-25T15:00:00'
+        '409':
+          description: Não é possível excluir um estoque que ainda possui produtos cadastrados.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 409
+                erro: Conflict
+                mensagem: Não é possível excluir um estoque com produtos cadastrados.
+                data: '2026-11-25T15:00:00'
+      x-required-role: ADMIN
+  /usuarios:
+    get:
+      tags:
+      - Usuários
+      summary: Listar usuários
+      description: 'Lista os usuários cadastrados, mostrando ID, e-mail e perfil. As senhas não são retornadas.
+        Acesso: ADMIN.'
+      operationId: listarUsuarios
+      responses:
+        '200':
+          description: Lista de registros encontrada. Se não houver nenhum, retorna uma lista vazia.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsuarioDTO'
+              example:
+              - id: 2
+                email: funcionario@exemplo.com
+                role: USER
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '403':
+          description: Usuário autenticado, mas sem permissão ADMIN para esta operação.
+      x-required-role: ADMIN
+    post:
+      tags:
+      - Usuários
+      summary: Cadastrar usuário
+      description: 'Cadastra um usuário com e-mail único e senha de pelo menos 8 caracteres. O perfil
+        padrão é USER. Acesso: ADMIN.'
+      operationId: cadastrarUsuario
+      requestBody:
+        description: Informe os dados abaixo em JSON.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioCadastroDTO'
+            example:
+              email: funcionario@exemplo.com
+              senha: senhaExemplo123
+              role: USER
+        required: true
+      responses:
+        '201':
+          description: Usuário cadastrado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioDTO'
+              example:
+                id: 2
+                email: funcionario@exemplo.com
+                role: USER
+        '400':
+          description: 'Dados inválidos ou JSON ausente/incorreto. Exemplo: senha: A senha deve ter no
+            mínimo 8 caracteres.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 400
+                erro: Bad Request
+                mensagem: 'senha: A senha deve ter no mínimo 8 caracteres.'
+                data: '2026-11-25T15:00:00'
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '403':
+          description: Usuário autenticado, mas sem permissão ADMIN para esta operação.
+        '415':
+          description: O formato enviado não é aceito. Envie o corpo da requisição como 
+            application/json.
+        '409':
+          description: O e-mail informado já está cadastrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 409
+                erro: Conflict
+                mensagem: E-mail já cadastrado.
+                data: '2026-11-25T15:00:00'
+      x-required-role: ADMIN
+  /usuarios/{id}:
+    put:
+      tags:
+      - Usuários
+      summary: Atualizar usuário
+      description: 'Altera o e-mail de um usuário e, se informada, também a senha. A senha deve ter pelo
+        menos 8 caracteres. Esta rota não altera o perfil. Acesso: ADMIN.'
+      operationId: atualizarUsuario
+      parameters:
+      - name: id
+        in: path
+        description: ID do registro que você quer consultar, alterar ou excluir.
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 2
+      requestBody:
+        description: Informe os dados abaixo em JSON.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioAtualizacaoDTO'
+            example:
+              email: funcionario.novo@exemplo.com
+              senha: novaSenha123
+        required: true
+      responses:
+        '200':
+          description: Dados atualizados com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioDTO'
+              example:
+                id: 2
+                email: funcionario.novo@exemplo.com
+                role: USER
+        '400':
+          description: 'Dados inválidos ou JSON ausente/incorreto. Exemplo: email: Informe um e-mail válido.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 400
+                erro: Bad Request
+                mensagem: 'email: Informe um e-mail válido.'
+                data: '2026-11-25T15:00:00'
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '403':
+          description: Usuário autenticado, mas sem permissão ADMIN para esta operação.
+        '404':
+          description: Usuário não encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 404
+                erro: Not Found
+                mensagem: Usuário com ID 2 não encontrado.
+                data: '2026-11-25T15:00:00'
+        '415':
+          description: O formato enviado não é aceito. Envie o corpo da requisição como 
+            application/json.
+        '409':
+          description: O e-mail informado já está cadastrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 409
+                erro: Conflict
+                mensagem: E-mail já cadastrado.
+                data: '2026-11-25T15:00:00'
+      x-required-role: ADMIN
+    delete:
+      tags:
+      - Usuários
+      summary: Excluir usuário
+      description: 'Exclui o usuário informado pelo ID. Acesso: ADMIN.'
+      operationId: excluirUsuario
+      parameters:
+      - name: id
+        in: path
+        description: ID do registro que você quer consultar, alterar ou excluir.
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 2
+      responses:
+        '204':
+          description: Registro excluído. A resposta não possui corpo.
+        '400':
+          description: O ID precisa ser um número inteiro. O formato da resposta pode variar, pois 
+            esse erro é tratado pelo Spring.
+        '401':
+          description: É necessário fazer login ou enviar um JWT válido. O token pode estar ausente,
+            inválido ou expirado.
+        '403':
+          description: Usuário autenticado, mas sem permissão ADMIN para esta operação.
+        '404':
+          description: Usuário não encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 404
+                erro: Not Found
+                mensagem: Usuário com ID 2 não encontrado.
+                data: '2026-11-25T15:00:00'
+        '409':
+          description: O banco de dados não permitiu a operação por uma regra de integridade.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroAPI'
+              example:
+                status: 409
+                erro: Conflict
+                mensagem: A operação viola uma regra de integridade do banco de dados.
+                data: '2026-11-25T15:00:00'
+      x-required-role: ADMIN
+components:
+  schemas:
+    LoginDTO:
+      required:
+      - email
+      - senha
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: admin@exemplo.com
+        senha:
+          type: string
+          example: senhaExemplo123
+      additionalProperties: false
+    TokenDTO:
+      required:
+      - tipo
+      - token
+      type: object
+      properties:
+        token:
+          type: string
+          description: Token JWT assinado.
+        tipo:
+          type: string
+          example: Bearer
+          enum:
+          - Bearer
+    EstoqueDTO:
+      required:
+      - localizacao
+      - nome
+      type: object
+      properties:
+        nome:
+          maxLength: 100
+          minLength: 1
+          type: string
+          example: Estoque Principal
+        localizacao:
+          maxLength: 150
+          minLength: 1
+          type: string
+          example: Blumenau
+    Estoque:
+      required:
+      - id
+      - localizacao
+      - nome
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 2
+        nome:
+          type: string
+          example: Estoque Principal
+        localizacao:
+          type: string
+          example: Blumenau
+      description: Dados de um estoque. A lista de produtos não aparece na resposta.
+    ProdutoDTO:
+      required:
+      - estoqueId
+      - nome
+      - preco
+      - quantidade
+      - quantidadeMinima
+      type: object
+      properties:
+        nome:
+          maxLength: 100
+          minLength: 1
+          type: string
+          example: Mouse Gamer
+        descricao:
+          maxLength: 500
+          type: string
+          nullable: true
+          example: Mouse sem fio
+        preco:
+          minimum: 0
+          exclusiveMinimum: true
+          type: number
+          format: double
+          example: 150.0
+        quantidade:
+          minimum: 0
+          type: integer
+          format: int32
+          example: 20
+        quantidadeMinima:
+          minimum: 0
+          type: integer
+          format: int32
+          example: 5
+        estoqueId:
+          minimum: 1
+          type: integer
+          format: int32
+          example: 2
+    Produto:
+      required:
+      - estoque
+      - id
+      - nome
+      - preco
+      - quantidade
+      - quantidadeMinima
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 3
+        nome:
+          type: string
+          example: Mouse Gamer
+        descricao:
+          type: string
+          nullable: true
+          example: Mouse sem fio
+        preco:
+          type: number
+          format: double
+          example: 150.0
+        quantidade:
+          type: integer
+          format: int32
+          example: 20
+        quantidadeMinima:
+          type: integer
+          format: int32
+          example: 5
+        estoque:
+          $ref: '#/components/schemas/Estoque'
+    UsuarioCadastroDTO:
+      required:
+      - email
+      - senha
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: funcionario@exemplo.com
+        senha:
+          minLength: 8
+          type: string
+          example: senhaExemplo123
+        role:
+          type: string
+          description: 'Opcional: quando não informado, o perfil será USER.'
+          enum:
+          - USER
+          - ADMIN
+          default: USER
+    UsuarioAtualizacaoDTO:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: funcionario.novo@exemplo.com
+        senha:
+          minLength: 8
+          type: string
+          description: 'Opcional: se não enviar a senha, a atual será mantida.'
+    UsuarioDTO:
+      required:
+      - email
+      - id
+      - role
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2
+        email:
+          type: string
+          format: email
+          example: funcionario@exemplo.com
+        role:
+          type: string
+          example: USER
+          enum:
+          - USER
+          - ADMIN
+      description: Dados públicos do usuário. A senha e o hash da senha não são devolvidos.
+    ErroAPI:
+      required:
+      - data
+      - erro
+      - mensagem
+      - status
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        erro:
+          type: string
+          example: Bad Request
+        mensagem:
+          type: string
+          example: O nome do estoque é obrigatório.
+        data:
+          type: string
+          example: 2026-11-18 19:00:00
+  securitySchemes:
+    bearerAuth:
+      type: http
+      description: 'Faça POST /auth/login para receber o token. Nas rotas protegidas, envie Authorization:
+        Bearer SEU_TOKEN.'
+      scheme: bearer
+      bearerFormat: JWT
